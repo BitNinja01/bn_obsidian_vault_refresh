@@ -3,3 +3,14 @@
 .env
 CLAUDE.md
 PICKUP_PROMPT.md
+
+# Build outputs
+main.js
+*.js.map
+dist/
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store

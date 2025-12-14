@@ -1,0 +1,11 @@
+{
+	"id": "bn-obsidian-vault-refresh",
+	"name": "Vault Refresh",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Refresh your vault's database without restarting Obsidian",
+	"author": "BitNinja01",
+	"authorUrl": "https://github.com/BitNinja01",
+	"fundingUrl": "https://github.com/BitNinja01/bn_obsidian_vault_refresh",
+	"isDesktopOnly": false
+}

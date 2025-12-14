@@ -1,0 +1,32 @@
+{
+  "name": "bn-obsidian-vault-refresh",
+  "version": "1.0.0",
+  "description": "Refresh your vault's database without restarting Obsidian",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "node node_modules/typescript/bin/tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "vault",
+    "refresh"
+  ],
+  "author": "BitNinja01",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "^0.27.1",
+    "obsidian": "latest",
+    "tslib": "^2.6.2",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@esbuild/linux-arm64": "^0.27.1"
+  }
+}
