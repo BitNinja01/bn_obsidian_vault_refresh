@@ -6,9 +6,9 @@ export async function refreshVault(app: App): Promise<void> {
 	try {
 		const adapter = app.vault.adapter as FileSystemAdapter;
 
-		// Reconcile root folder first
-		// @ts-ignore - accessing internal API
-		await adapter.reconcileFolderCreation('');
+		// Force initialization of the file cache by listing all files
+		// This ensures internal structures are ready for reconciliation
+		await app.vault.adapter.list('/');
 
 		// Read filesystem recursively and reconcile all files
 		await reconcileDirectory(app, adapter, '');
@@ -36,12 +36,31 @@ async function reconcileDirectory(app: App, adapter: FileSystemAdapter, dirPath:
 			// Skip .obsidian and other hidden directories
 			if (entry.name.startsWith('.')) continue;
 
-			// @ts-ignore - accessing internal API
-			await adapter.reconcileFolderCreation(relativePath);
-			await reconcileDirectory(app, adapter, relativePath);
+			try {
+				// @ts-ignore - accessing internal API
+				await adapter.reconcileFolderCreation(relativePath);
+			} catch (error) {
+				// Silently continue - this may fail on first run but works on subsequent runs
+				console.debug(`Could not reconcile directory ${relativePath} (may succeed on next refresh):`, error);
+			}
+
+			// Always recurse into subdirectories regardless of reconciliation result
+			try {
+				await reconcileDirectory(app, adapter, relativePath);
+			} catch (error) {
+				console.error(`Error processing directory ${relativePath}:`, error);
+			}
 		} else if (entry.isFile()) {
-			// @ts-ignore - accessing internal API
-			await adapter.reconcileFile(relativePath, relativePath, 0);
+			try {
+				// Get file stats for accurate mtime
+				const stats = await adapter.stat(relativePath);
+				const mtime = stats?.mtime || Date.now();
+
+				// @ts-ignore - accessing internal API
+				await adapter.reconcileFile(relativePath, relativePath, mtime);
+			} catch (error) {
+				console.error(`Error reconciling file ${relativePath}:`, error);
+			}
 		}
 	}
 }
